@@ -38,7 +38,8 @@ public class TestDataSender {
             String createTakenBooksTable = "CREATE TABLE taken_books (\n" +
                     "book_id INT NOT NULL, FOREIGN KEY (book_id) REFERENCES books (book_id),\n" +
                     "reader_id INT NOT NULL, FOREIGN KEY (reader_id) REFERENCES readers (reader_id),\n" +
-                    "PRIMARY KEY (book_id, reader_id), order_date DATE, return_by DATE);";
+                    "PRIMARY KEY (book_id, reader_id), order_date DATE, return_by DATE," +
+                    "order_status ENUM(\"ACTIVE\", \"RETURNED\", \"OVERDUE\") NOT NULL DEFAULT \"ACTIVE\");";
             testStatement.execute(createReadersTable);
             testStatement.execute(createBooksTable);
             testStatement.execute(createTakenBooksTable);
