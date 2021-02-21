@@ -1,7 +1,9 @@
 package main.command_line_ui;
+
 import java.util.Scanner;
+
 import static main.command_line_ui.Menu.*;
-import static main.services.ReaderService.addReaderUiExchange;
+import static main.services.ReaderService.*;
 
 public class Main {
 
@@ -12,8 +14,6 @@ public class Main {
 
         while (menuScanner.hasNextInt()) {
             int operationCode = menuScanner.nextInt();
-            //System.out.println();
-
             switch (operationCode) {
                 case 0:
                     printMenu();
@@ -22,6 +22,12 @@ public class Main {
                     addReaderUiExchange();
                     //method to enter the username. seems that the method should be in services.ReaderService
                     break;
+                case 23:
+                    getReaderByIdUiExchange();
+                    break;
+                case 24:
+                    editReaderUiExchange();
+                    break;
                 case 41:
                     about();
                     break;
@@ -29,7 +35,6 @@ public class Main {
                     System.out.println("The feature is under development or incorrect operation code.");
                     break;
             }
-
             System.out.println("\nEnter operation code. To display the menu again, enter 0:");
         }
 

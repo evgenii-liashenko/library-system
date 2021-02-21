@@ -16,10 +16,16 @@ class Menu {
                         "4. Other >\n" +
                         "\t1. About Library System");
     }
+
     public static void about(){
         System.out.println("Library System\nVersion 0.1\nDeveloped by an EPAM student Evgenii Liashenko");
 //        System.out.println("Lorem ipsum dolor sit amet, consectetur adipiscing elit. \n" +
 //                "Nam molestie augue nibh, ut blandit quam egestas eu. " +
 //                "\nUt non mauris non mi eleifend pellentesque. " );
+    }
+
+    boolean run = true;
+    public static void quit(){
+
     }
 }

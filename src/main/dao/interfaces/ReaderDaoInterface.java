@@ -1,5 +1,4 @@
 package main.dao.interfaces;
-
 import main.models.Reader;
 import java.util.List;
 
