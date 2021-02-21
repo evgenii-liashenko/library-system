@@ -1,6 +1,7 @@
 package main.models;
 
 public class Reader {
+    private int reader_id;      //null. Do we need it here?
     private String name;
 
     public Reader(String name) {

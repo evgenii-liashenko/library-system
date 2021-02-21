@@ -1,6 +1,7 @@
 package main.command_line_ui;
 import java.util.Scanner;
 import static main.command_line_ui.Menu.*;
+import static main.services.ReaderService.addReaderUiExchange;
 
 public class Main {
 
@@ -16,6 +17,10 @@ public class Main {
             switch (operationCode) {
                 case 0:
                     printMenu();
+                    break;
+                case 22:
+                    addReaderUiExchange();
+                    //method to enter the username. seems that the method should be in services.ReaderService
                     break;
                 case 41:
                     about();

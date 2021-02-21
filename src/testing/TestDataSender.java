@@ -26,7 +26,9 @@ public class TestDataSender {
             testStatement = testConnection.createStatement();
             testStatement.execute("DROP DATABASE IF EXISTS library_system;");
             testStatement.execute("CREATE DATABASE library_system;");
+//            System.out.println(            testStatement.executeUpdate("CREATE DATABASE library_system;"));
             testStatement.execute("USE library_system;");
+            //System.out.println(testStatement.executeUpdate("USE library_system;"));
 
             //1.3 Creating empty tables
             String createReadersTable = "CREATE TABLE readers (reader_id INT NOT NULL AUTO_INCREMENT" +
@@ -34,7 +36,7 @@ public class TestDataSender {
             String createBooksTable = "CREATE TABLE books (\n" +
                     "book_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" +
                     "title TINYTEXT, authors TINYTEXT, year INT,\n" +
-                    "topic TINYTEXT, total_copies INT, available_copies INT);";
+                    "topic TINYTEXT, total_copies INT, copies_in_stock INT);";
             String createTakenBooksTable = "CREATE TABLE taken_books (\n" +
                     "book_id INT NOT NULL, FOREIGN KEY (book_id) REFERENCES books (book_id),\n" +
                     "reader_id INT NOT NULL, FOREIGN KEY (reader_id) REFERENCES readers (reader_id),\n" +
@@ -43,7 +45,7 @@ public class TestDataSender {
             testStatement.execute(createReadersTable);
             testStatement.execute(createBooksTable);
             testStatement.execute(createTakenBooksTable);
-
+//            System.out.println(testStatement.executeUpdate(createTakenBooksTable));
 
             //2. Preparing test data
             // Readers
@@ -74,9 +76,10 @@ public class TestDataSender {
             for (Reader reader : readers) {
                 testPS.setString(1, reader.getName());
                 testPS.execute();
+//                System.out.println(testPS.executeUpdate());
             }
             // Sending books to the database
-            String addBook = "INSERT INTO books (title, authors, year, topic, total_copies, available_copies) VALUES (?, ?, ?, ?, ?, ?)";
+            String addBook = "INSERT INTO books (title, authors, year, topic, total_copies, copies_in_stock) VALUES (?, ?, ?, ?, ?, ?)";
             testPS = testConnection.prepareStatement(addBook);
             for (Book book : books) {
                 testPS.setString(1, book.getTitle());
@@ -84,7 +87,7 @@ public class TestDataSender {
                 testPS.setInt(3, book.getYear());
                 testPS.setString(4, book.getTopic());
                 testPS.setInt(5, book.getTotalCopies());
-                testPS.setInt(6, book.getAvailableCopies());
+                testPS.setInt(6, book.getTotalCopies());
                 testPS.execute();
             }
 

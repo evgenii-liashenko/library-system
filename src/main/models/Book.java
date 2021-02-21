@@ -1,13 +1,18 @@
 package main.models;
 
 public class Book {
-//    private int book_id;        //null
+    private int book_id;        //null. Do we need it here?
     private String title;
     private String authors;
     private int year;
     private String topic;
     private int totalCopies;
-    private int availableCopies;
+    //private int availableCopies;
+
+
+
+
+
 
     public Book(String title, String authors, int year, String topic, int totalCopies, int availableCopies) {
         this.title = title;
@@ -15,7 +20,7 @@ public class Book {
         this.year = year;
         this.topic = topic;
         this.totalCopies = totalCopies;
-        this.availableCopies = availableCopies;
+      //  this.availableCopies = availableCopies;
     }
 
 //    public int getBook_id() {
@@ -66,11 +71,11 @@ public class Book {
         this.totalCopies = totalCopies;
     }
 
-    public int getAvailableCopies() {
-        return availableCopies;
-    }
+//    public int getAvailableCopies() {
+//        return availableCopies;
+//    }
 
-    public void setAvailableCopies(int availableCopies) {
-        this.availableCopies = availableCopies;
-    }
+//    public void setAvailableCopies(int availableCopies) {
+//        this.availableCopies = availableCopies;
+//    }
 }
