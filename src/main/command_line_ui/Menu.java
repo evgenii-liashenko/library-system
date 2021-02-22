@@ -14,7 +14,8 @@ class Menu {
                         "\t1. List all orders\n" + "\t2. Place a new order\n" + "\t3. Get order details\n" +
                         "\t4. Edit an existing order\n" + "\t5. Return an order\n" + "\t6. List overdue orders\n" +
                         "4. Other >\n" +
-                        "\t1. About Library System");
+                        "\t1. Run database setup script\n" +
+                        "\t2. About Library System");
     }
 
     public static void about(){

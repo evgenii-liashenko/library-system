@@ -2,6 +2,7 @@ package main.command_line_ui;
 
 import java.util.Scanner;
 
+import static main.command_line_ui.DatabaseSetupScript.setUpDatabase;
 import static main.command_line_ui.Menu.*;
 import static main.services.ReaderService.*;
 
@@ -34,6 +35,9 @@ public class Main {
                     removeReaderUiExchange();
                     break;
                 case 41:
+                    setUpDatabase();
+                    break;
+                case 42:
                     about();
                     break;
                 default:

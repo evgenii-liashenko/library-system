@@ -13,6 +13,13 @@ public class Reader {
         this.name = name;
     }
 
+    public void setReaderId(int readerId) {
+        this.readerId = readerId;
+    }
+
+    public Reader() {
+    }
+
     public int getReaderId() {
         return readerId;
     }
