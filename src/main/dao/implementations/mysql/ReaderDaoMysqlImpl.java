@@ -3,10 +3,7 @@ package main.dao.implementations.mysql;
 import main.dao.interfaces.ReaderDaoInterface;
 import main.models.Reader;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -107,14 +104,63 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         return executeUpdateResult != 0;
     }
 
-    //TO BE DEVELOPED
-    public boolean remove(int reader_id) {
-        return true;
+
+    @Override
+    public boolean remove(int readerId) {
+        PreparedStatement preparedStatement = null;
+        int executeUpdateResult = 0;
+        String removeReaderQuery = "DELETE FROM library_system.readers WHERE reader_id = ?;";
+        try {
+            preparedStatement = sqlConnection.prepareStatement(removeReaderQuery);
+            preparedStatement.setInt(1, readerId);
+            executeUpdateResult = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (sqlConnection != null) sqlConnection.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return executeUpdateResult != 0;
     }
 
-    //TO BE DEVELOPED
+
+    @Override
     public ArrayList<Reader> getAllReaders() {
-        return new ArrayList<Reader>();
+        String getAllReadersQuery = "SELECT * FROM library_system.readers;";
+        Statement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<Reader> readers = new ArrayList<Reader>();
+        try {
+            statement = sqlConnection.createStatement();
+            resultSet = statement.executeQuery(getAllReadersQuery);
+            while (resultSet.next()) {
+                Reader reader = new Reader(resultSet.getInt("reader_id"), resultSet.getString("name"));
+                readers.add(reader);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) statement.close();
+                if (sqlConnection != null) sqlConnection.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return readers;
     }
+
 
 }

@@ -18,9 +18,11 @@ public class Main {
                 case 0:
                     printMenu();
                     break;
+                case 21:
+                    listAllReadersUiExchange();
+                    break;
                 case 22:
                     addReaderUiExchange();
-                    //method to enter the username. seems that the method should be in services.ReaderService
                     break;
                 case 23:
                     getReaderByIdUiExchange();
@@ -28,11 +30,14 @@ public class Main {
                 case 24:
                     editReaderUiExchange();
                     break;
+                case 25:
+                    removeReaderUiExchange();
+                    break;
                 case 41:
                     about();
                     break;
                 default:
-                    System.out.println("The feature is under development or incorrect operation code.");
+                    System.out.println("The feature is under development or incorrect operation code");
                     break;
             }
             System.out.println("\nEnter operation code. To display the menu again, enter 0:");
