@@ -6,17 +6,44 @@ import main.models.Reader;
 import java.sql.*;
 import java.util.ArrayList;
 
-
 public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
-
     private Connection sqlConnection = null;
 
     public ReaderDaoMysqlImpl(Connection connectionUpdate) {
         this.sqlConnection = connectionUpdate;
     }
 
+    @Override
+    public ArrayList<Reader> getAllReaders() {
+        String getAllReadersQuery = "SELECT * FROM library_system.readers;";
+        Statement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<Reader> readers = new ArrayList<Reader>();
+        try {
+            statement = sqlConnection.createStatement();
+            resultSet = statement.executeQuery(getAllReadersQuery);
+            while (resultSet.next()) {
+                Reader reader = new Reader(resultSet.getInt("reader_id"), resultSet.getString("name"));
+                readers.add(reader);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) statement.close();
+                if (sqlConnection != null) sqlConnection.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return readers;
+    }
 
-    //@Override
+    @Override
     public Integer add(Reader reader) throws SQLException {     //TODO return the generated id instead of the boolean
         String addReaderQuery = "INSERT INTO readers (name) VALUES (?);";
         PreparedStatement preparedStatement = null;
@@ -46,7 +73,6 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
             throw new SQLException("DAO add method for Reader failed to obtain the generated id");
         return generatedId;
     }
-
 
     @Override
     public Reader getInfo(int reader_id) {
@@ -79,7 +105,6 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         return new Reader(fullName);
     }
 
-
     @Override
     public boolean edit(Reader fixedReader) {
         int readerId = fixedReader.getReaderId();
@@ -109,7 +134,6 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         return executeUpdateResult != 0;
     }
 
-
     @Override
     public boolean remove(int readerId) {
         PreparedStatement preparedStatement = null;
@@ -135,37 +159,4 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         }
         return executeUpdateResult != 0;
     }
-
-
-    @Override
-    public ArrayList<Reader> getAllReaders() {
-        String getAllReadersQuery = "SELECT * FROM library_system.readers;";
-        Statement statement = null;
-        ResultSet resultSet = null;
-        ArrayList<Reader> readers = new ArrayList<Reader>();
-        try {
-            statement = sqlConnection.createStatement();
-            resultSet = statement.executeQuery(getAllReadersQuery);
-            while (resultSet.next()) {
-                Reader reader = new Reader(resultSet.getInt("reader_id"), resultSet.getString("name"));
-                readers.add(reader);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getSQLState() + "\n" + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) statement.close();
-                if (sqlConnection != null) sqlConnection.close();
-            } catch (SQLException e) {
-                System.out.println(e.getSQLState() + "\n" + e.getMessage());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return readers;
-    }
-
-
 }

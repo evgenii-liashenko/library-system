@@ -3,7 +3,7 @@ package main.dao.interfaces;
 import main.models.BookOrder;
 import java.util.List;
 
-public interface BookOrderDaoInterface {
+public interface BookOrderDaoInterface extends CrudDaoInterface {
     public List<BookOrder> getAllOrders();
 }
 

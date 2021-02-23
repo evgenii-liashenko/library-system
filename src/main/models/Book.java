@@ -1,7 +1,7 @@
 package main.models;
 
 public class Book {
-    private int bookId;        //null. Do we need it here?
+    private int bookId;
     private String title;
     private String authors;
     private int year;
@@ -9,6 +9,15 @@ public class Book {
     private int totalCopies;
 
     public Book() {
+    }
+
+    public Book(int bookId, String title, String authors, int year, String topic, int totalCopies) {
+        this.bookId = bookId;
+        this.title = title;
+        this.authors = authors;
+        this.year = year;
+        this.topic = topic;
+        this.totalCopies = totalCopies;
     }
 
     public void setBookId(int bookId) {

@@ -10,6 +10,15 @@ public class BookOrder {
     private LocalDate returnByDate;
     private BookOrderStatus orderStatus;
 
+    public BookOrder(int orderId, Book book, Reader reader, LocalDate orderDate, LocalDate returnByDate, BookOrderStatus orderStatus) {
+        this.orderId = orderId;
+        this.book = book;
+        this.reader = reader;
+        this.orderDate = orderDate;
+        this.returnByDate = returnByDate;
+        this.orderStatus = orderStatus;
+    }
+
     public BookOrder() {
     }
 
