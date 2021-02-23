@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import static main.command_line_ui.DatabaseSetupScript.setUpDatabase;
 import static main.command_line_ui.Menu.*;
+import static main.services.BookService.*;
+import static main.services.BookOrderService.*;
 import static main.services.ReaderService.*;
 
 public class Main {
@@ -19,6 +21,21 @@ public class Main {
             switch (operationCode) {
                 case 0:
                     printMenu();
+                    break;
+                case 11:
+                    listAllBooksUiExchange();
+                    break;
+                case 12:
+                    addBookUiExchange();
+                    break;
+                case 13:
+                    getBookByIdUiExchange();
+                    break;
+                case 14:
+                    editBookUiExchange();
+                    break;
+                case 15:
+                    removeBookUiExchange();
                     break;
                 case 21:
                     listAllReadersUiExchange();

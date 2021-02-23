@@ -6,10 +6,9 @@ import main.dao.interfaces.ReaderDaoInterface;
 import main.models.Reader;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static main.command_line_ui.UserInput.*;
+import static main.command_line_ui.Menu.*;
 
 
 public class ReaderService {
@@ -17,7 +16,7 @@ public class ReaderService {
     public static void addReaderUiExchange() throws SQLException {
         String name = inputTextFromUser("Enter full name:");
         Integer generatedId = addReaderDaoExchange(name);
-        String uiMessage = "Reader " + name + " has been added and assigned id " + generatedId.toString();
+        String uiMessage = "Reader " + name + " has been added to the library and assigned id " + generatedId.toString();
         System.out.println(uiMessage);
     }
 
@@ -31,6 +30,7 @@ public class ReaderService {
     }
     //todo: reader (name) has been added and assigned id (id)
 
+
     public static void getReaderByIdUiExchange() {
         int readerId = inputNumberFromUser("Enter reader id:");
         Reader theReader = getReaderByIdDaoExchange(readerId);
@@ -39,10 +39,10 @@ public class ReaderService {
         System.out.println(uiMessage);
     }
 
-    public static Reader getReaderByIdDaoExchange(int reader_id) {
+    public static Reader getReaderByIdDaoExchange(int readerId) {
         ConnectionManager sql = new ConnectionManager();
         ReaderDaoInterface readerDaoImplementation = new ReaderDaoMysqlImpl(sql.openConnection());
-        return readerDaoImplementation.getInfo(reader_id);
+        return readerDaoImplementation.getInfo(readerId);
     }
 
 
@@ -66,6 +66,7 @@ public class ReaderService {
         return successfulOperation;
     }
 
+
     public static void removeReaderUiExchange() {
         int readerId = inputNumberFromUser("Enter the id of the reader to remove:");
         String userName = getReaderByIdDaoExchange(readerId).getName();
@@ -84,10 +85,11 @@ public class ReaderService {
         return successfulOperation;
     }
 
+
     public static void listAllReadersUiExchange() {
         List<Reader> readers = listAllReadersDaoExchange();
         for (Reader reader : readers) {
-            System.out.println(reader.getReaderId() + "[id]" +"\t\t" +  reader.getName() + "[Full name]");
+            System.out.println(reader.getReaderId() + "[id]" + "\t\t" + reader.getName() + "[Full name]");
         }
     }
 

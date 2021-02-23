@@ -1,9 +1,11 @@
 package main.command_line_ui;
 
-class Menu {
-    public static void printMenu(){
+import java.util.Scanner;
+
+public class Menu {
+    public static void printMenu() {
         System.out.println(
-                "\nLibrary System:\n" +
+                        "\nLibrary System:\n" +
                         "1. Books >\n" +
                         "\t1. List all books\n" + "\t2. Add a new book\n" + "\t3. Get book description\n" +
                         "\t4. Edit an existing book\n" + "\t5. Remove a book from the library\n" +
@@ -18,15 +20,28 @@ class Menu {
                         "\t2. About Library System");
     }
 
-    public static void about(){
+    public static void about() {
         System.out.println("Library System\nVersion 0.1\nDeveloped by an EPAM student Evgenii Liashenko");
-//        System.out.println("Lorem ipsum dolor sit amet, consectetur adipiscing elit. \n" +
-//                "Nam molestie augue nibh, ut blandit quam egestas eu. " +
-//                "\nUt non mauris non mi eleifend pellentesque. " );
     }
 
-    boolean run = true;
-    public static void quit(){
-
+    public static int inputNumberFromUser(String message) {
+        System.out.println(message);
+        int id = Integer.MIN_VALUE;
+        Scanner idScanner = new Scanner(System.in);
+        while (id == Integer.MIN_VALUE) {
+            id = idScanner.nextInt();
+        }
+        return id;
     }
+
+    public static String inputTextFromUser(String message) {
+        System.out.println(message);
+        String name = null;
+        Scanner nameScanner = new Scanner(System.in);
+        while (name == null) {
+            name = nameScanner.nextLine();
+        }
+        return name;
+    }
+
 }

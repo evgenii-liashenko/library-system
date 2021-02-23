@@ -89,7 +89,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
 
     @Override
     public Book getInfo(int book_id){
-        String getBookInfoQuery = "SELECT * FROM books WHERE reader_id = ?;";
+        String getBookInfoQuery = "SELECT * FROM books WHERE book_id = ?;";
         PreparedStatement preparedStatement = null;
         String title = "";
         String authors = "";
@@ -97,14 +97,14 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
         String topic = "";
         int totalCopies = Integer.MIN_VALUE;
         ResultSet resultSet = null;
-        try {
+        try {   //TODO add copies_in_stock
             preparedStatement = sqlConnection.prepareStatement(getBookInfoQuery);
             preparedStatement.setInt(1, book_id);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 title = resultSet.getString("title");
                 authors = resultSet.getString("authors");
-                year = resultSet.getInt(year);
+                year = resultSet.getInt("year");
                 topic = resultSet.getString("topic");
                 totalCopies = resultSet.getInt("total_copies");
             }
@@ -129,7 +129,6 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
     @Override
     public boolean edit(Book fixedBook) {
         int bookId = fixedBook.getBookId();
-
         String newTitle = fixedBook.getTitle();
         String newAuthors = fixedBook.getAuthors();
         int newYear = fixedBook.getYear();
@@ -146,6 +145,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
             preparedStatement.setInt(3, newYear);
             preparedStatement.setString(4, newTopic);
             preparedStatement.setInt(5, newTotalCopies);
+            preparedStatement.setInt(6, bookId);
             executeUpdateResult = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
