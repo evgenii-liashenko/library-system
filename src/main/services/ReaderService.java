@@ -4,6 +4,8 @@ import main.dao.implementations.mysql.ConnectionManager;
 import main.dao.implementations.mysql.ReaderDaoMysqlImpl;
 import main.dao.interfaces.ReaderDaoInterface;
 import main.models.Reader;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +14,22 @@ import static main.command_line_ui.UserInput.*;
 
 public class ReaderService {
     //this method exchanges data with the commandline layer
-    public static void addReaderUiExchange() {
+    public static void addReaderUiExchange() throws SQLException {
         String name = inputTextFromUser("Enter full name:");
-        String uiMessage = (addReaderDaoExchange(name)) ? ("Successful operation") : ("Operation failed");
+        Integer generatedId = addReaderDaoExchange(name);
+        String uiMessage = "Reader " + name + " has been added and assigned id " + generatedId.toString();
         System.out.println(uiMessage);
     }
 
     //this method exchanges data with the DAO layer
-    public static boolean addReaderDaoExchange(String name) {
+    public static Integer addReaderDaoExchange(String name) throws SQLException {
         ConnectionManager sqlDataBase = new ConnectionManager();
         ReaderDaoInterface readerDaoImplementation = new ReaderDaoMysqlImpl(sqlDataBase.openConnection());
-        boolean successfulOperation = readerDaoImplementation.add(new Reader(name));
+        Integer generatedId = readerDaoImplementation.add(new Reader(name));
         sqlDataBase.closeConnection();
-        return successfulOperation;
+        return generatedId;
     }
-    //todo: reader (name) has beed added and assigned id (id)
+    //todo: reader (name) has been added and assigned id (id)
 
     public static void getReaderByIdUiExchange() {
         int readerId = inputNumberFromUser("Enter reader id:");
@@ -69,7 +72,8 @@ public class ReaderService {
         ConnectionManager sql = new ConnectionManager();
         ReaderDaoInterface readerDaoImplementation = new ReaderDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = readerDaoImplementation.remove(readerId);
-        String uiMessage = successfulOperation ? ("Reader " + userName + " has been removed from the library") : ("Operation failed");
+        String uiMessage = successfulOperation ? ("Reader " + userName + " has been removed from the library") :
+                ("Operation failed. Make sure " + userName + " has no active orders");  //TODO Make this actially work so that only the users who have ACTIVE orders cannot be removed
         System.out.println(uiMessage);
     }
 
@@ -83,7 +87,7 @@ public class ReaderService {
     public static void listAllReadersUiExchange() {
         List<Reader> readers = listAllReadersDaoExchange();
         for (Reader reader : readers) {
-            System.out.println("id: " + reader.getReaderId() +"\t\t" + "Full name: " + reader.getName());
+            System.out.println(reader.getReaderId() + "[id]" +"\t\t" +  reader.getName() + "[Full name]");
         }
     }
 

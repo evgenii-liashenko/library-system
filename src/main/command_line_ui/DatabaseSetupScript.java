@@ -4,7 +4,6 @@ import main.models.Book;
 import main.models.BookOrder;
 import main.models.BookOrderStatus;
 import main.models.Reader;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ public class DatabaseSetupScript {
         ResultSet resultSet = null;
 
         try {
-
             //1.1 Creating a connection to a local MySQL server
             connection = DriverManager.getConnection(
                     "jdbc:mysql://127.0.0.1:3306",
@@ -27,16 +25,12 @@ public class DatabaseSetupScript {
                     "solarwinds123");
             String conStatus = (connection != null) ? ("Successful connection") : ("Connection failed :(");
             System.out.println(conStatus);
-
-
             //1.2 Creating a database
             statement = connection.createStatement();
             statement.execute("DROP DATABASE IF EXISTS library_system;");
             if (statement.executeUpdate("CREATE DATABASE library_system;") == 1)
                 System.out.println("Database library_system has been created");;
             statement.execute("USE library_system;");
-
-
             //1.3 Creating empty tables
             String createReadersTable = "CREATE TABLE readers (reader_id INT NOT NULL AUTO_INCREMENT" +
                     " PRIMARY KEY, name TINYTEXT);";
@@ -89,8 +83,6 @@ public class DatabaseSetupScript {
                 BookOrder order = new BookOrder(books.get(i), readers.get(i), today, returnDate, BookOrderStatus.ACTIVE);
                 orders.add(order);
             }
-            //TODO gotta add boodId and readerId to orders
-
 
 
 
@@ -107,8 +99,6 @@ public class DatabaseSetupScript {
                     reader.setReaderId(readerId);
                 }
             }
-
-
             // Adding books to the database
             String addBook = "INSERT INTO books (title, authors, year, topic, total_copies, copies_in_stock) VALUES (?, ?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(addBook, Statement.RETURN_GENERATED_KEYS);
@@ -130,13 +120,15 @@ public class DatabaseSetupScript {
             String addOrder = "INSERT INTO taken_books (book_id, reader_id, order_date, return_by, order_status) VALUES (?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(addOrder);
             for (BookOrder order: orders) {
-                preparedStatement.setInt(1, order.getBook().getBookId());   //TODO where will id come from?
+                preparedStatement.setInt(1, order.getBook().getBookId());
                 preparedStatement.setInt(2, order.getReader().getReaderId());
                 preparedStatement.setDate(3, Date.valueOf(today));
                 preparedStatement.setDate(4, Date.valueOf(returnDate));
                 preparedStatement.setString(5, order.getOrderStatus().name());
                 preparedStatement.execute();
             }
+
+
 
 
         } catch (SQLException e) {

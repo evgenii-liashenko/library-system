@@ -16,15 +16,18 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
     }
 
 
-    @Override
-    public boolean add(Reader reader) {
+    //@Override
+    public Integer add(Reader reader) throws SQLException {     //TODO return the generated id instead of the boolean
         String addReaderQuery = "INSERT INTO readers (name) VALUES (?);";
         PreparedStatement preparedStatement = null;
-        int executeUpdateResult = 0;
+        Integer generatedId = null;
         try {
-            preparedStatement = sqlConnection.prepareStatement(addReaderQuery);
+            preparedStatement = sqlConnection.prepareStatement(addReaderQuery, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, reader.getName());
-            executeUpdateResult = preparedStatement.executeUpdate();
+            generatedId = preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            generatedId = generatedKeys.getInt(1);
         } catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
         } catch (Exception e) {
@@ -39,7 +42,9 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
                 e.printStackTrace();
             }
         }
-        return executeUpdateResult != 0;
+        if (generatedId == null)
+            throw new SQLException("DAO add method for Reader failed to obtain the generated id");
+        return generatedId;
     }
 
 

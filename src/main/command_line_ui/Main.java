@@ -1,5 +1,6 @@
 package main.command_line_ui;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static main.command_line_ui.DatabaseSetupScript.setUpDatabase;
@@ -8,7 +9,7 @@ import static main.services.ReaderService.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         printMenu();
         System.out.println("\nEnter two digit operation code from the menu above:");
         Scanner menuScanner = new Scanner(System.in);
