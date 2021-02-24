@@ -19,6 +19,10 @@ public class BookOrder {
         this.orderStatus = orderStatus;
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
+
     public BookOrder() {
     }
 

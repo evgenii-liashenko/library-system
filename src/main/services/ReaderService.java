@@ -5,7 +5,6 @@ import main.dao.implementations.mysql.ReaderDaoMysqlImpl;
 import main.dao.interfaces.ReaderDaoInterface;
 import main.models.Reader;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static main.command_line_ui.Menu.*;
@@ -13,7 +12,7 @@ import static main.command_line_ui.Menu.*;
 
 public class ReaderService {
     //this method exchanges data with the commandline layer
-    public static void addReaderUiExchange() throws SQLException {
+    public static void addReaderUiExchange()  {
         String name = inputTextFromUser("Enter full name:");
         Integer generatedId = addReaderDaoExchange(name);
         String uiMessage = "Reader " + name + " has been added to the library and assigned id " + generatedId.toString();
@@ -21,14 +20,14 @@ public class ReaderService {
     }
 
     //this method exchanges data with the DAO layer
-    public static Integer addReaderDaoExchange(String name) throws SQLException {
+    public static Integer addReaderDaoExchange(String name)  {
         ConnectionManager sqlDataBase = new ConnectionManager();
         ReaderDaoInterface readerDaoImplementation = new ReaderDaoMysqlImpl(sqlDataBase.openConnection());
         Integer generatedId = readerDaoImplementation.add(new Reader(name));
         sqlDataBase.closeConnection();
         return generatedId;
     }
-    //todo: reader (name) has been added and assigned id (id)
+
 
 
     public static void getReaderByIdUiExchange() {

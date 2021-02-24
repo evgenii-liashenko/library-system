@@ -52,7 +52,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
     }
 
     @Override
-    public Integer add(Book book) throws SQLException {     //TODO return the generated id instead of the boolean
+    public Integer add(Book book) {
         String addBookQuery = "INSERT INTO books (title, authors, year, topic, total_copies, copies_in_stock) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = null;
         Integer generatedId = null;
@@ -74,6 +74,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
             e.printStackTrace();
         } finally {
             try {
+                if (generatedId == null) throw new SQLException("DAO add method for Book failed to obtain the generated id");    //TODO move the exception to finally and remove it from other places
                 if (preparedStatement != null) preparedStatement.close();
                 if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
@@ -82,8 +83,6 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
                 e.printStackTrace();
             }
         }
-        if (generatedId == null)
-            throw new SQLException("DAO add method for Book failed to obtain the generated id");
         return generatedId;
     }
 
@@ -115,7 +114,8 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
+                // TODO closing the connection here breaks getAllOrders(). Thus, it should be closed from service layer by executing CloseConnection() on a corresponding object of ConnectionManager class
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {

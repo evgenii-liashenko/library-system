@@ -4,7 +4,7 @@ package main.dao.interfaces;
 import java.sql.SQLException;
 
 public interface CrudDaoInterface<ModelType, ResponseType> {
-    public ResponseType add(ModelType valueObject) throws SQLException;   //CREATE
+    public ResponseType add(ModelType valueObject);   //CREATE
     public ModelType getInfo(int model_id);      //READ
     public boolean edit(ModelType valueObject);  //UPDATE
     public boolean remove(int model_id);     //DELETE

@@ -15,7 +15,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
 
     @Override
     public ArrayList<Reader> getAllReaders() {
-        String getAllReadersQuery = "SELECT * FROM library_system.readers;";
+        String getAllReadersQuery = "SELECT * FROM readers;";
         Statement statement = null;
         ResultSet resultSet = null;
         ArrayList<Reader> readers = new ArrayList<Reader>();
@@ -44,7 +44,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
     }
 
     @Override
-    public Integer add(Reader reader) throws SQLException {     //TODO return the generated id instead of the boolean
+    public Integer add(Reader reader) {
         String addReaderQuery = "INSERT INTO readers (name) VALUES (?);";
         PreparedStatement preparedStatement = null;
         Integer generatedId = null;
@@ -61,6 +61,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
             e.printStackTrace();
         } finally {
             try {
+                if (generatedId == null) throw new SQLException("DAO add method for Reader failed to obtain the generated id");
                 if (preparedStatement != null) preparedStatement.close();
                 if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
@@ -69,14 +70,12 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
                 e.printStackTrace();
             }
         }
-        if (generatedId == null)
-            throw new SQLException("DAO add method for Reader failed to obtain the generated id");
         return generatedId;
     }
 
     @Override
     public Reader getInfo(int reader_id) {
-        String getReaderInfo = "SELECT * FROM library_system.readers WHERE reader_id = ?;";
+        String getReaderInfo = "SELECT * FROM readers WHERE reader_id = ?;";
         PreparedStatement preparedStatement = null;
         String fullName = "";
         ResultSet resultSet = null;
@@ -94,7 +93,8 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
+                // TODO closing the connection here breaks getAllOrders(). Thus, it should be closed from service layer by executing CloseConnection() on a corresponding object of ConnectionManager class
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -102,7 +102,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
             }
         }
 
-        return new Reader(fullName);
+        return new Reader(reader_id, fullName);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
     public boolean remove(int readerId) {
         PreparedStatement preparedStatement = null;
         int executeUpdateResult = 0;
-        String removeReaderQuery = "DELETE FROM library_system.readers WHERE reader_id = ?;";
+        String removeReaderQuery = "DELETE FROM readers WHERE reader_id = ?;";
         try {
             preparedStatement = sqlConnection.prepareStatement(removeReaderQuery);
             preparedStatement.setInt(1, readerId);
