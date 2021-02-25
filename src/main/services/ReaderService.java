@@ -73,7 +73,7 @@ public class ReaderService {
         ReaderDaoInterface readerDaoImplementation = new ReaderDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = readerDaoImplementation.remove(readerId);
         String uiMessage = successfulOperation ? ("Reader " + userName + " has been removed from the library") :
-                ("Operation failed. Make sure " + userName + " has no active orders");  //TODO Make this actially work so that only the users who have ACTIVE orders cannot be removed
+                ("Operation failed. The reader " + userName + " has one or more orders. Use operations 35 and 36, then try again");
         System.out.println(uiMessage);
     }
 

@@ -67,6 +67,12 @@ public class Main {
                 case 35:
                     returnBookUiExchange();
                     break;
+                case 36:
+                    deleteReturnedOrdersUiExchange();
+                    break;
+                case 37:
+                    listOverdueOrdersUiExchange();
+                    break;
                 case 41:
                     setUpDatabase();
                     break;
@@ -74,7 +80,7 @@ public class Main {
                     about();
                     break;
                 default:
-                    System.out.println("The feature is under development or incorrect operation code");
+                    System.out.println("Incorrect operation code or the feature is under development");
                     break;
             }
             System.out.println("\nEnter operation code. To display the menu again, enter 0:");

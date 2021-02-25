@@ -85,21 +85,46 @@ public class BookOrderService {
     }
 
 
-
     public static void returnBookUiExchange() {
         int orderId = inputNumberFromUser("Enter order id:");
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = returnBookDaoExchange(orderId);
-        String uiMessage = successfulOperation ? ("Book " + getOrderByIdDaoExchange(orderId).getBook().getTitle() +
-                " has been returned to the library from reader " + getOrderByIdDaoExchange(orderId).getReader().getName()) : ("Operation failed");
+        String uiMessage = successfulOperation ? ("Book [" + getOrderByIdDaoExchange(orderId).getBook().getTitle() +
+                "] has been returned to the library from reader " + getOrderByIdDaoExchange(orderId).getReader().getName()) : ("Operation failed");
         System.out.println(uiMessage);
     }
     public static boolean returnBookDaoExchange(int orderId) {
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
-        boolean successfulOperation = bookOrderDaoImplementation.setStatusToReturned(orderId);
+        boolean successfulOperation = bookOrderDaoImplementation.makeReturned(orderId);
         return successfulOperation;
+    }
+
+
+    public static void deleteReturnedOrdersUiExchange(){
+        String uiMessage = deleteReturnedOrdersDaoExchange()? "Returned orders have been removed from order history" : "Operation failed";
+        System.out.println(uiMessage);
+    }
+    public static boolean deleteReturnedOrdersDaoExchange(){
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        boolean successfulOperation = bookOrderDaoImplementation.deleteReturned();
+        return successfulOperation;
+    }
+
+    public static void listOverdueOrdersUiExchange(){
+        List<BookOrder> overdueOrders = listOverdueOrdersDaoExchange();
+        for (BookOrder order : overdueOrders) {
+            System.out.println(
+                    order.getOrderId() + "[id]\t" + order.getBook().getTitle() + "[Book]\t" + order.getReader().getName() + "[Reader]\t"
+                            + order.getOrderDate() + "[Date]\t" + order.getReturnByDate() + "[To be returned by]\t" + order.getOrderStatus() + "[Status]");
+        }
+    }
+    public static List<BookOrder> listOverdueOrdersDaoExchange(){
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        return bookOrderDaoImplementation.getOverdueOrders();
     }
 
 }

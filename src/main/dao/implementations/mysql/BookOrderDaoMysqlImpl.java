@@ -204,7 +204,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     }
 
     @Override
-    public boolean setStatusToReturned(int orderId){
+    public boolean makeReturned(int orderId){
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String setStatusQuery = "UPDATE taken_books SET order_status = ? WHERE order_id = ?;";
@@ -232,5 +232,41 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
 
     }
 
+    @Override
+    public boolean deleteReturned(){
+        PreparedStatement preparedStatement = null;
+        int executeUpdateResult = 0;
+        String removeReturnedQuery = "DELETE FROM taken_books WHERE order_status = 'RETURNED';";
+        try {
+            preparedStatement = sqlConnection.prepareStatement(removeReturnedQuery);
+            executeUpdateResult = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (sqlConnection != null) sqlConnection.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return executeUpdateResult != 0;
+    }
+
+    @Override
+    public List<BookOrder> getOverdueOrders(){
+        LocalDate today = LocalDate.now();
+        List<BookOrder> allOrders = getAllOrders();
+        ArrayList<BookOrder> overdueOrders = new ArrayList();
+        for (BookOrder order: allOrders             ) {
+            if (today.isAfter(order.getReturnByDate()))
+                overdueOrders.add(order);
+        }
+        return overdueOrders;
+    }
 
 }

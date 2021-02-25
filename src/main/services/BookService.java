@@ -32,7 +32,7 @@ public class BookService {
         int totalCopies = inputNumberFromUser("Enter the amount of copies:");
         Book newBook = new Book(title, authors, year, topic, totalCopies);
         Integer generatedId = addBookDaoExchange(newBook);
-        String uiMessage = "Book " + title + " has been added and assigned id " + generatedId.toString();
+        String uiMessage = "Book [" + title + "] has been added to the library and assigned id " + generatedId.toString();
         System.out.println(uiMessage);
     }
     public static Integer addBookDaoExchange(Book newBook)  {
@@ -85,15 +85,17 @@ public class BookService {
         ConnectionManager sql = new ConnectionManager();
         BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = bookDaoImplementation.remove(bookId);
-        String uiMessage = successfulOperation ? ("Book " + title + " has been removed from the library") :
-                ("Operation failed. Make sure " + title + " is not present in any active orders");  //TODO Make this actually work, so that only the books that are in ACTIVE orders cannot be removed
+        String uiMessage = successfulOperation ? ("Book [" + title + "] has been removed from the library") :
+                ("Operation failed. The book [" + title + "] is present in one or more orders. Use operations 35 and 36, then try again");
         System.out.println(uiMessage);
-    }       //TODO Make it so that only the books that are in ACTIVE orders cannot be removed
+    }
     public static boolean removeBookDaoExchange(int bookId) {
         ConnectionManager sql = new ConnectionManager();
         BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = bookDaoImplementation.remove(bookId);
         return successfulOperation;
     }
+
+
 
 }
