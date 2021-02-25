@@ -67,7 +67,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
         return orders;
     }
 
-    @Override   //TODO Make it work
+    @Override
     public Integer add(BookOrder bookOrder) {
         String addOrderQuery = "INSERT INTO taken_books (book_id, reader_id, order_date, return_by, order_status) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = null;
@@ -79,13 +79,10 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             preparedStatement.setDate(3, Date.valueOf(bookOrder.getOrderDate()));
             preparedStatement.setDate(4, Date.valueOf(bookOrder.getReturnByDate()));
             preparedStatement.setString(5, bookOrder.getOrderStatus().name());
-
-
             generatedId = preparedStatement.executeUpdate();
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             generatedKeys.next();
-            generatedId = generatedKeys.getInt(1);      //TODO make it work. it returns null
-
+            generatedId = generatedKeys.getInt(1);
         } catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
         } catch (Exception e) {
@@ -109,7 +106,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
         String getOrderInfoQuery = "SELECT * FROM taken_books WHERE order_id = ?;";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        BookOrder theOrder = null;      //todo throw an exception if null to be returned
+        BookOrder theOrder = null;
         try {
             preparedStatement = sqlConnection.prepareStatement(getOrderInfoQuery);
             preparedStatement.setInt(1, orderId);
@@ -135,6 +132,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             e.printStackTrace();
         } finally {
             try {
+                if (theOrder == null) throw new SQLException("getInfo method in BookOrder DAO implementation failed to obtain order details");
                 if (preparedStatement != null) preparedStatement.close();
                 if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
@@ -151,17 +149,8 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     public boolean edit(BookOrder fixedBookOrder) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
-//        int OrderId = fixedBookOrder.getOrderId();
-//        int newBookId = fixedBookOrder.getBook().getBookId();
-//        int newReaderId = fixedBookOrder.getReader().getReaderId();
-//        LocalDate newOrderDate = fixedBookOrder.getOrderDate();
-//        LocalDate newReturnByDate = fixedBookOrder.getReturnByDate();
-//        BookOrderStatus newOrderStatus = fixedBookOrder.getOrderStatus();
-
         String editOrderQuery = "UPDATE taken_books SET book_id = ?, reader_id = ?, order_date = ?, return_by = ?, order_status = ? WHERE order_id = ?;";
         int executeUpdateResult = 0;
-
         try {
             preparedStatement = sqlConnection.prepareStatement(editOrderQuery);
             preparedStatement.setInt(1, fixedBookOrder.getBook().getBookId());
@@ -170,7 +159,6 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             preparedStatement.setDate(4, Date.valueOf(fixedBookOrder.getReturnByDate()));
             preparedStatement.setString(5, String.valueOf(fixedBookOrder.getOrderStatus()));
             preparedStatement.setInt(6, fixedBookOrder.getOrderId());
-
             executeUpdateResult = preparedStatement.executeUpdate();
         }catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
@@ -186,12 +174,10 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
                 e.printStackTrace();
             }
         }
-
-
         return executeUpdateResult != 0;
     }
 
-    @Override       //TODO set the enum to RETURNED instead of deleting or write a separate method for that
+    @Override
     public boolean remove(int orderId) {
         PreparedStatement preparedStatement = null;
         int executeUpdateResult = 0;
@@ -215,6 +201,35 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             }
         }
         return executeUpdateResult != 0;
+    }
+
+    @Override
+    public boolean setStatusToReturned(int orderId){
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String setStatusQuery = "UPDATE taken_books SET order_status = ? WHERE order_id = ?;";
+        int executeUpdateResult = 0;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(setStatusQuery);
+            preparedStatement.setString(1, BookOrderStatus.RETURNED.name());
+            preparedStatement.setInt(2, orderId);
+            executeUpdateResult = preparedStatement.executeUpdate();
+        }catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (sqlConnection != null) sqlConnection.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return executeUpdateResult != 0;
+
     }
 
 

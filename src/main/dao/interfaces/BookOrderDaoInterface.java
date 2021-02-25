@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface BookOrderDaoInterface extends CrudDaoInterface<BookOrder, Integer> {
     public List<BookOrder> getAllOrders();
+    public boolean setStatusToReturned(int orderId);
 }
 
 

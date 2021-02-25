@@ -58,6 +58,15 @@ public class Main {
                 case 32:
                     addOrderUiExchange();
                     break;
+                case 33:
+                    getOrderByIdUiExchange();
+                    break;
+                case 34:
+                    editOrderUiExchange();
+                    break;
+                case 35:
+                    returnBookUiExchange();
+                    break;
                 case 41:
                     setUpDatabase();
                     break;

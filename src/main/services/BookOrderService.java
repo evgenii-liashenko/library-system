@@ -1,18 +1,15 @@
 package main.services;
 
-import main.dao.implementations.mysql.BookDaoMysqlImpl;
 import main.dao.implementations.mysql.BookOrderDaoMysqlImpl;
 import main.dao.implementations.mysql.ConnectionManager;
-import main.dao.interfaces.BookDaoInterface;
 import main.dao.interfaces.BookOrderDaoInterface;
-import main.models.Book;
 import main.models.BookOrder;
 import main.models.BookOrderStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static main.command_line_ui.Menu.inputNumberFromUser;
+import static main.command_line_ui.Menu.*;
 import static main.services.BookService.getBookByIdDaoExchange;
 import static main.services.ReaderService.getReaderByIdDaoExchange;
 
@@ -44,7 +41,6 @@ public class BookOrderService {
         String uiMessage = "A new order has been created and assigned id " + generatedId.toString();
         System.out.println(uiMessage);
     }
-
     public static Integer addOrderDaoExchange(BookOrder newOrder) {
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
@@ -52,59 +48,58 @@ public class BookOrderService {
         return generatedId;
     }
 
-//
-//    public static void getBookByIdUiExchange() {
-//        int bookId = inputNumberFromUser("Enter book id:");
-//        Book theBook = getBookByIdDaoExchange(bookId);
-//        String uiMessage = theBook.getBookId() + "[id]\t" + theBook.getTitle() + "[Title]\t" + theBook.getAuthors() + "[Authours]\t" +
-//                theBook.getYear() + "[Year]\t" + theBook.getTopic() + "[Topic]\t" + theBook.getTotalCopies() + "[Total copies]";
-//        System.out.println(uiMessage);
-//    }
-//    public static Book getBookByIdDaoExchange(int bookId) {
-//        ConnectionManager sql = new ConnectionManager();
-//        BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
-//        return bookDaoImplementation.getInfo(bookId);
-//    }
-//
-//
-//    public static void editBookUiExchange() {
-//        int bookId = inputNumberFromUser("Enter the id of the book to edit:");
-//        String newTitle = inputTextFromUser("Enter new title:");
-//        String newAuthors = inputTextFromUser("Enter new authors:");
-//        int newYear = inputNumberFromUser("Enter new year:");
-//        String newTopic = inputTextFromUser("Enter new topic:");
-//        int newTotalCopies = inputNumberFromUser("Enter new amount of copies:");
-//        Book fixedBook = new Book(bookId, newTitle, newAuthors, newYear, newTopic, newTotalCopies);
-//        boolean successfulOperation = editBookDaoExchange(fixedBook);
-//        String newDescription = fixedBook.getTitle() + "[Title]\t" + fixedBook.getAuthors() + "[Authours]\t" +
-//                fixedBook.getYear() + "[Year]\t" + fixedBook.getTopic() + "[Topic]\t" + fixedBook.getTotalCopies() + "[Total copies]";
-//        String uiMessage = successfulOperation ? ("Description for the book with id " + bookId + " has been set to " + newDescription) : "Operation failed";
-//        System.out.println(uiMessage);
-//    }
-//    public static boolean editBookDaoExchange(Book fixedBook) {
-//        ConnectionManager sql = new ConnectionManager();
-//        BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
-//        boolean successfulOperation = bookDaoImplementation.edit(fixedBook);
-//        return successfulOperation;
-//    }
-//
-//
-//    public static void removeBookUiExchange() {
-//        int bookId = inputNumberFromUser("Enter the id of the book to remove:");
-//        String title = getBookByIdDaoExchange(bookId).getTitle();
-//        ConnectionManager sql = new ConnectionManager();
-//        BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
-//        boolean successfulOperation = bookDaoImplementation.remove(bookId);
-//        String uiMessage = successfulOperation ? ("Book " + title + " has been removed from the library") :
-//                ("Operation failed. Make sure " + title + " is not present in any active orders");  //TODO Make this actually work, so that only the books that are in ACTIVE orders cannot be removed
-//        System.out.println(uiMessage);
-//    }
-//    public static boolean removeBookDaoExchange(int bookId) {
-//        ConnectionManager sql = new ConnectionManager();
-//        BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
-//        boolean successfulOperation = bookDaoImplementation.remove(bookId);
-//        return successfulOperation;
-//    }
 
+    public static void getOrderByIdUiExchange() {   //TODO non-existing orders should not cause NPE
+        int orderId = inputNumberFromUser("Enter order id:");
+        BookOrder theOrder = getOrderByIdDaoExchange(orderId);
+        String uiMessage = theOrder.getOrderId() + "[id]\t" + theOrder.getBook().getTitle() + "[Book]\t" + theOrder.getReader().getName() + "[Reader]\t"
+                + theOrder.getOrderDate() + "[Date]\t" + theOrder.getReturnByDate() + "[To be returned by]\t" + theOrder.getOrderStatus() + "[Status]";
+        System.out.println(uiMessage);
+    }
+    public static BookOrder getOrderByIdDaoExchange(int orderId) {
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        return bookOrderDaoImplementation.getInfo(orderId);
+    }
+
+
+    public static void editOrderUiExchange() {
+        int orderId = inputNumberFromUser("Enter the id of the order to edit:");
+        int newBookId = inputNumberFromUser("Enter new book id:");
+        int newReaderId = inputNumberFromUser("Enter new reader id:");
+        LocalDate newOrderDate = inputDateFromUser("Enter new order date (YYYY-MM-DD):");
+        LocalDate newReturnDate = inputDateFromUser("Enter new return date (YYYY-MM-DD):");
+        BookOrderStatus newOrderStatus = BookOrderStatus.valueOf(inputTextFromUser("Enter new order status (RETURNED or ACTIVE):"));
+        BookOrder fixedOrder = new BookOrder(orderId, getBookByIdDaoExchange(newBookId), getReaderByIdDaoExchange(newReaderId), newOrderDate, newReturnDate, newOrderStatus);
+        boolean successfulOperation = editBookOrderDaoExchange(fixedOrder);
+        String newDescription = fixedOrder.getBook().getTitle() + "[Book]\t" + fixedOrder.getReader().getName() +
+                "[Reader]\t" + fixedOrder.getOrderDate() + "[Order date]\t" + fixedOrder.getReturnByDate() + "[Return date]\t" + fixedOrder.getOrderStatus() + "[Status]";
+        String uiMessage = successfulOperation ? ("Details for the order with id " + orderId + " have been updated to:\n" + newDescription) : "Operation failed";
+        System.out.println(uiMessage);
+    }
+    public static boolean editBookOrderDaoExchange(BookOrder fixedOrder) {
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        boolean successfulOperation = bookOrderDaoImplementation.edit(fixedOrder);
+        return successfulOperation;
+    }
+
+
+
+    public static void returnBookUiExchange() {
+        int orderId = inputNumberFromUser("Enter order id:");
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        boolean successfulOperation = returnBookDaoExchange(orderId);
+        String uiMessage = successfulOperation ? ("Book " + getOrderByIdDaoExchange(orderId).getBook().getTitle() +
+                " has been returned to the library from reader " + getOrderByIdDaoExchange(orderId).getReader().getName()) : ("Operation failed");
+        System.out.println(uiMessage);
+    }
+    public static boolean returnBookDaoExchange(int orderId) {
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        boolean successfulOperation = bookOrderDaoImplementation.setStatusToReturned(orderId);
+        return successfulOperation;
+    }
 
 }

@@ -1,5 +1,6 @@
 package main.command_line_ui;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Menu {
@@ -42,6 +43,17 @@ public class Menu {
             name = nameScanner.nextLine();
         }
         return name;
+    }
+
+    public static LocalDate inputDateFromUser(String message) {
+        System.out.println(message);
+        String dateString = null;
+        Scanner nameScanner = new Scanner(System.in);
+        while (dateString == null) {
+            dateString = nameScanner.nextLine();
+        }
+        LocalDate theDate = LocalDate.parse(dateString);
+        return theDate;
     }
 
 }

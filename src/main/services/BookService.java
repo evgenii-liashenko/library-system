@@ -88,7 +88,7 @@ public class BookService {
         String uiMessage = successfulOperation ? ("Book " + title + " has been removed from the library") :
                 ("Operation failed. Make sure " + title + " is not present in any active orders");  //TODO Make this actually work, so that only the books that are in ACTIVE orders cannot be removed
         System.out.println(uiMessage);
-    }
+    }       //TODO Make it so that only the books that are in ACTIVE orders cannot be removed
     public static boolean removeBookDaoExchange(int bookId) {
         ConnectionManager sql = new ConnectionManager();
         BookDaoInterface bookDaoImplementation = new BookDaoMysqlImpl(sql.openConnection());
