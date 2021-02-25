@@ -41,7 +41,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
         } finally {
             try {
                 if (statement != null) statement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -74,9 +74,9 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
             e.printStackTrace();
         } finally {
             try {
-                if (generatedId == null) throw new SQLException("DAO add method for Book failed to obtain the generated id");    //TODO move the exception to finally and remove it from other places
+                if (generatedId == null) throw new SQLException("DAO add method for Book failed to obtain the generated id");
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -154,7 +154,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -180,7 +180,7 @@ public class BookDaoMysqlImpl implements BookDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {

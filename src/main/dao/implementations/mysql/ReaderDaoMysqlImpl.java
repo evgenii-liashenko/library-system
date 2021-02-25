@@ -33,7 +33,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         } finally {
             try {
                 if (statement != null) statement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -63,7 +63,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
             try {
                 if (generatedId == null) throw new SQLException("DAO add method for Reader failed to obtain the generated id");
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -124,7 +124,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ReaderDaoMysqlImpl implements ReaderDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {

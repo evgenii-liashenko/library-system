@@ -8,4 +8,7 @@ public interface BookOrderDaoInterface extends CrudDaoInterface<BookOrder, Integ
     public boolean makeReturned(int orderId);
     public boolean deleteReturned();
     public List<BookOrder> getOverdueOrders();
+    public int getCopiesInStock(int bookId);
+    public boolean decrementCopiesInStock(int bookId);
+    public boolean incrementCopiesInStock(int bookId);
 }

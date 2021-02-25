@@ -29,32 +29,41 @@ public class BookOrderService {
         return bookOrderDaoImplementation.getAllOrders();
     }
 
-
-    public static void addOrderUiExchange() {       //TODO decrement the available copies, block if there aren't any
+    public static void addOrderUiExchange() {
+        //Some business logic here: decrement the copies_in_stock for the book when the order is placed, block the operation if there aren't any.
         int bookId = inputNumberFromUser("Enter book id:");
-        int readerId = inputNumberFromUser("Enter reader id:");
-        LocalDate orderDate = LocalDate.now();
-        int duration = inputNumberFromUser("Enter loan period in months:");
-        LocalDate returnDate = orderDate.plusMonths(duration);
-        BookOrder newOrder = new BookOrder(getBookByIdDaoExchange(bookId), getReaderByIdDaoExchange(readerId), orderDate, returnDate, BookOrderStatus.ACTIVE);
-        Integer generatedId = addOrderDaoExchange(newOrder);
-        String uiMessage = "A new order has been created and assigned id " + generatedId.toString();
-        System.out.println(uiMessage);
+        if (isBookInStock(bookId)) {
+            int readerId = inputNumberFromUser("Enter reader id:");
+            LocalDate orderDate = LocalDate.now();
+            int duration = inputNumberFromUser("Enter loan period in months:");
+            LocalDate returnDate = orderDate.plusMonths(duration);
+            BookOrder newOrder = new BookOrder(getBookByIdDaoExchange(bookId), getReaderByIdDaoExchange(readerId), orderDate, returnDate, BookOrderStatus.ACTIVE);
+            Integer generatedId = addOrderDaoExchange(newOrder);
+            String uiMessage = "A new order for a book [" +newOrder.getBook().getTitle() + "] and reader " + newOrder.getReader().getName() +" has been created and assigned id " + generatedId.toString();
+            System.out.println(uiMessage);
+        }
+        else
+            System.out.println("Operation cannot be performed. The book [" + getBookByIdDaoExchange(bookId).getTitle() + "] is out of stock");
     }
     public static Integer addOrderDaoExchange(BookOrder newOrder) {
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
         Integer generatedId = bookOrderDaoImplementation.add(newOrder);
+        bookOrderDaoImplementation.decrementCopiesInStock(newOrder.getBook().getBookId());
         return generatedId;
     }
 
 
-    public static void getOrderByIdUiExchange() {   //TODO non-existing orders should not cause NPE
+    public static void getOrderByIdUiExchange() {
         int orderId = inputNumberFromUser("Enter order id:");
         BookOrder theOrder = getOrderByIdDaoExchange(orderId);
-        String uiMessage = theOrder.getOrderId() + "[id]\t" + theOrder.getBook().getTitle() + "[Book]\t" + theOrder.getReader().getName() + "[Reader]\t"
-                + theOrder.getOrderDate() + "[Date]\t" + theOrder.getReturnByDate() + "[To be returned by]\t" + theOrder.getOrderStatus() + "[Status]";
-        System.out.println(uiMessage);
+        if (theOrder == null)
+            System.out.println("Order not found");
+        else {
+            String uiMessage = theOrder.getOrderId() + "[id]\t" + theOrder.getBook().getTitle() + "[Book]\t" + theOrder.getReader().getName() + "[Reader]\t"
+                    + theOrder.getOrderDate() + "[Date]\t" + theOrder.getReturnByDate() + "[To be returned by]\t" + theOrder.getOrderStatus() + "[Status]";
+            System.out.println(uiMessage);
+        }
     }
     public static BookOrder getOrderByIdDaoExchange(int orderId) {
         ConnectionManager sql = new ConnectionManager();
@@ -98,6 +107,7 @@ public class BookOrderService {
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
         boolean successfulOperation = bookOrderDaoImplementation.makeReturned(orderId);
+        bookOrderDaoImplementation.incrementCopiesInStock(getOrderByIdDaoExchange(orderId).getBook().getBookId());
         return successfulOperation;
     }
 
@@ -113,6 +123,7 @@ public class BookOrderService {
         return successfulOperation;
     }
 
+
     public static void listOverdueOrdersUiExchange(){
         List<BookOrder> overdueOrders = listOverdueOrdersDaoExchange();
         for (BookOrder order : overdueOrders) {
@@ -125,6 +136,12 @@ public class BookOrderService {
         ConnectionManager sql = new ConnectionManager();
         BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
         return bookOrderDaoImplementation.getOverdueOrders();
+    }
+
+    public static boolean isBookInStock(int bookId){
+        ConnectionManager sql = new ConnectionManager();
+        BookOrderDaoInterface bookOrderDaoImplementation = new BookOrderDaoMysqlImpl(sql.openConnection());
+        return bookOrderDaoImplementation.getCopiesInStock(bookId) > 0;
     }
 
 }

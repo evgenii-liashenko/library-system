@@ -56,7 +56,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
         } finally {
             try {
                 if (statement != null) statement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -89,9 +89,10 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             e.printStackTrace();
         } finally {
             try {
-                if (generatedId == null) throw new SQLException("The add method in DAO for BookOrder failed to get the generated id");
+                if (generatedId == null)
+                    throw new SQLException("The add method in DAO for BookOrder failed to get the generated id");
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -132,9 +133,10 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             e.printStackTrace();
         } finally {
             try {
-                if (theOrder == null) throw new SQLException("getInfo method in BookOrder DAO implementation failed to obtain order details");
+                if (theOrder == null)
+                    throw new SQLException("getInfo method in BookOrder DAO implementation failed to obtain order details");
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -148,7 +150,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     @Override
     public boolean edit(BookOrder fixedBookOrder) {
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+        //ResultSet resultSet = null;
         String editOrderQuery = "UPDATE taken_books SET book_id = ?, reader_id = ?, order_date = ?, return_by = ?, order_status = ? WHERE order_id = ?;";
         int executeUpdateResult = 0;
         try {
@@ -160,14 +162,14 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             preparedStatement.setString(5, String.valueOf(fixedBookOrder.getOrderStatus()));
             preparedStatement.setInt(6, fixedBookOrder.getOrderId());
             executeUpdateResult = preparedStatement.executeUpdate();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -193,7 +195,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -204,7 +206,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     }
 
     @Override
-    public boolean makeReturned(int orderId){
+    public boolean makeReturned(int orderId) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String setStatusQuery = "UPDATE taken_books SET order_status = ? WHERE order_id = ?;";
@@ -214,14 +216,14 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
             preparedStatement.setString(1, BookOrderStatus.RETURNED.name());
             preparedStatement.setInt(2, orderId);
             executeUpdateResult = preparedStatement.executeUpdate();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getSQLState() + "\n" + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -233,7 +235,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     }
 
     @Override
-    public boolean deleteReturned(){
+    public boolean deleteReturned() {
         PreparedStatement preparedStatement = null;
         int executeUpdateResult = 0;
         String removeReturnedQuery = "DELETE FROM taken_books WHERE order_status = 'RETURNED';";
@@ -247,7 +249,7 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
         } finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
-                if (sqlConnection != null) sqlConnection.close();
+                //if (sqlConnection != null) sqlConnection.close();
             } catch (SQLException e) {
                 System.out.println(e.getSQLState() + "\n" + e.getMessage());
             } catch (Exception e) {
@@ -258,15 +260,101 @@ public class BookOrderDaoMysqlImpl implements BookOrderDaoInterface {
     }
 
     @Override
-    public List<BookOrder> getOverdueOrders(){
+    public List<BookOrder> getOverdueOrders() {
         LocalDate today = LocalDate.now();
         List<BookOrder> allOrders = getAllOrders();
         ArrayList<BookOrder> overdueOrders = new ArrayList();
-        for (BookOrder order: allOrders             ) {
+        for (BookOrder order : allOrders) {
             if (today.isAfter(order.getReturnByDate()))
                 overdueOrders.add(order);
         }
         return overdueOrders;
     }
+
+    @Override
+    public int getCopiesInStock(int bookId){
+        String getStockQuery = "SELECT copies_in_stock FROM books WHERE book_id = ?;";
+        PreparedStatement preparedStatement = null;
+        int copiesInStock = Integer.MIN_VALUE;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(getStockQuery);
+            preparedStatement.setInt(1, bookId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                copiesInStock = resultSet.getInt("copies_in_stock");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return copiesInStock;
+
+    }
+
+    @Override
+    public boolean decrementCopiesInStock(int bookId) {
+        int copiesInStock = getCopiesInStock(bookId);
+        int newCopiesInStock = --copiesInStock;
+        String setCopiesInStock = "UPDATE books SET copies_in_stock = ? WHERE book_id = ?;";
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(setCopiesInStock);
+            preparedStatement.setInt(1, newCopiesInStock);
+            preparedStatement.setInt(2, bookId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return newCopiesInStock == getCopiesInStock(bookId);
+    }
+
+    @Override
+    public boolean incrementCopiesInStock(int bookId) {
+        int copiesInStock = getCopiesInStock(bookId);
+        int newCopiesInStock = ++copiesInStock;
+        String setCopiesInStock = "UPDATE books SET copies_in_stock = ? WHERE book_id = ?;";
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(setCopiesInStock);
+            preparedStatement.setInt(1, newCopiesInStock);
+            preparedStatement.setInt(2, bookId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getSQLState() + "\n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+            } catch (SQLException e) {
+                System.out.println(e.getSQLState() + "\n" + e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return newCopiesInStock == getCopiesInStock(bookId);
+    }
+
+
 
 }
