@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Test Suite for the service layer">
+    <test verbose="2" preserve-order="true" name="/Users/eugene/IdeaProjects/library system/src/testing/main/services">
+        <classes>
+            <class name="main.services.BookOrderServiceTest">
+                <methods>
+                    <include name="testListAllOrdersDaoExchange"/>
+                    <include name="testAddOrderDaoExchange"/>
+                    <include name="testGetOrderByIdDaoExchange"/>
+                    <include name="testEditBookOrderDaoExchange"/>
+                    <include name="testReturnBookDaoExchange"/>
+                    <include name="testDeleteReturnedOrdersDaoExchange"/>
+                    <include name="testListOverdueOrdersDaoExchange"/>
+                </methods>
+            </class>
+            <class name="main.services.BookServiceTest">
+                <methods>
+                    <include name="testListAllBooksDaoExchange"/>
+                    <include name="testAddBookDaoExchange"/>
+                    <include name="testGetBookByIdDaoExchange"/>
+                    <include name="testEditBookDaoExchange"/>
+                    <include name="testRemoveBookDaoExchange"/>
+                </methods>
+            </class>
+            <class name="main.services.ReaderServiceTest">
+                <methods>
+                    <include name="testGetReaderByIdDaoExchange"/>
+                    <include name="testEditReaderDaoExchange"/>
+                    <include name="testRemoveReaderDaoExchange"/>
+                    <include name="testListAllReadersDaoExchange"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
