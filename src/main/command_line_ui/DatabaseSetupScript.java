@@ -23,13 +23,13 @@ public class DatabaseSetupScript {
                     "jdbc:mysql://127.0.0.1:3306",
                     "root",
                     "solarwinds123");
-            String conStatus = (connection != null) ? ("Successful connection") : ("Connection failed :(");
+            String conStatus = (connection != null) ? ("Connected to the SQL server") : ("Connection failed :(");
             System.out.println(conStatus);
             //1.2 Creating a database
             statement = connection.createStatement();
             statement.execute("DROP DATABASE IF EXISTS library_system;");
             if (statement.executeUpdate("CREATE DATABASE library_system;") == 1)
-                System.out.println("Database library_system has been created");;
+                System.out.println("Created database library_system");;
             statement.execute("USE library_system;");
             //1.3 Creating empty tables
             String createReadersTable = "CREATE TABLE readers (reader_id INT NOT NULL AUTO_INCREMENT" +
@@ -52,6 +52,8 @@ public class DatabaseSetupScript {
             statement.execute(createReadersTable);
             statement.execute(createBooksTable);
             statement.execute(createTakenBooksTableWithId);
+
+            System.out.println("Created tables: readers, books, taken_books");
 
 
 
@@ -128,7 +130,7 @@ public class DatabaseSetupScript {
                 preparedStatement.execute();
             }
 
-
+            System.out.println("Test data added to the tables: " + readers.size() + " readers, " + books.size() + " books, " + orders.size() + " orders");
 
 
         } catch (SQLException e) {

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Test Suite for the service layer">
-    <test verbose="2" preserve-order="true" name="/Users/eugene/IdeaProjects/library system/src/testing/main/services">
+
+    <test verbose="2" preserve-order="true" name="Test all service methods of all service classes">
+
         <classes>
+
             <class name="main.services.BookOrderServiceTest">
                 <methods>
                     <include name="testListAllOrdersDaoExchange"/>
@@ -14,6 +17,7 @@
                     <include name="testListOverdueOrdersDaoExchange"/>
                 </methods>
             </class>
+
             <class name="main.services.BookServiceTest">
                 <methods>
                     <include name="testListAllBooksDaoExchange"/>
@@ -23,6 +27,7 @@
                     <include name="testRemoveBookDaoExchange"/>
                 </methods>
             </class>
+
             <class name="main.services.ReaderServiceTest">
                 <methods>
                     <include name="testGetReaderByIdDaoExchange"/>
@@ -31,6 +36,9 @@
                     <include name="testListAllReadersDaoExchange"/>
                 </methods>
             </class>
+
         </classes>
+
     </test>
+
 </suite>
