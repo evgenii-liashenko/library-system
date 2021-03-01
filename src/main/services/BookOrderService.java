@@ -37,7 +37,7 @@ public class BookOrderService {
             LocalDate orderDate = LocalDate.now();
             int duration = inputNumberFromUser("Enter loan period in months:");
             LocalDate returnDate = orderDate.plusMonths(duration);
-            BookOrder newOrder = new BookOrder(getBookByIdDaoExchange(bookId), getReaderByIdDaoExchange(readerId), orderDate, returnDate, BookOrderStatus.ACTIVE);
+            BookOrder newOrder = new BookOrder(getBookByIdDaoExchange(bookId), getReaderByIdDaoExchange(readerId), orderDate, returnDate);
             Integer generatedId = addOrderDaoExchange(newOrder);
             String uiMessage = "A new order for a book [" +newOrder.getBook().getTitle() + "] and reader " + newOrder.getReader().getName() +" has been created and assigned id " + generatedId.toString();
             System.out.println(uiMessage);

@@ -19,13 +19,29 @@ public class BookOrder {
         this.orderStatus = orderStatus;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public BookOrder(Book book, Reader reader, LocalDate orderDate, LocalDate returnByDate, BookOrderStatus orderStatus) {
+        this.book = book;
+        this.reader = reader;
+        this.orderDate = orderDate;
+        this.returnByDate = returnByDate;
+        this.orderStatus = orderStatus;
     }
+
+    public BookOrder(Book book, Reader reader, LocalDate orderDate, LocalDate returnByDate) {
+        this.book = book;
+        this.reader = reader;
+        this.orderDate = orderDate;
+        this.returnByDate = returnByDate;
+        this.orderStatus = BookOrderStatus.ACTIVE;
+    }
+
 
     public BookOrder() {
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
     public Book getBook() {
         return book;
     }
@@ -66,11 +82,4 @@ public class BookOrder {
         this.orderStatus = orderStatus;
     }
 
-    public BookOrder(Book book, Reader reader, LocalDate orderDate, LocalDate returnByDate, BookOrderStatus orderStatus) {
-        this.book = book;
-        this.reader = reader;
-        this.orderDate = orderDate;
-        this.returnByDate = returnByDate;
-        this.orderStatus = orderStatus;
-    }
 }
